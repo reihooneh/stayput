@@ -1,0 +1,54 @@
+<!--{"title": "Stayput: which furniture falls in an earthquake", "description": "Stayput simulates thousands of earthquakes on the floor you live on to find which furniture in a room will topple, where it lands, and what to anchor first.", "nav": "index", "script": "home.js"}-->
+    <section class="hero">
+      <div class="hero-text">
+        <h1>Which of your furniture falls in an earthquake?</h1>
+        <p class="lede">In strong shaking, tall furniture topples onto beds, desks and doorways. Stayput simulates hundreds of earthquakes on the floor you live on, works out what falls, where it lands, and which straps to put up first.</p>
+        <div class="actions">
+          <a class="button primary" href="room.html">Check your room</a>
+          <a class="button" href="shaking.html">Why things fall</a>
+        </div>
+      </div>
+      <div class="shake-box">
+        <div id="hero-view" class="view" aria-describedby="home-status"></div>
+        <div id="seismo" class="seismo-box"></div>
+        <div class="shake-controls">
+          <fieldset class="fieldset">
+            <legend>Shaking strength (Mercalli intensity)</legend>
+            <div class="shake-row">
+              <div class="segmented" id="intensity"></div>
+              <button class="button primary" id="shake" type="button" disabled>Shake the room</button>
+            </div>
+          </fieldset>
+          <p class="status" id="home-status" role="status">Loading the simulation…</p>
+          <ul class="outcomes" id="outcomes" aria-label="What each item did"></ul>
+          <button class="button quiet" id="another" type="button" disabled>Try another earthquake</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="band">
+      <h2>How it works</h2>
+      <div class="steps">
+        <div>
+          <h3>Draw your room</h3>
+          <p>Place your bookcases, wardrobes and shelves, the bed or desk, and the door. Say which floor you live on and what the ground is like.</p>
+        </div>
+        <div>
+          <h3>Shake it hundreds of times</h3>
+          <p>Each piece of furniture rocks on its edges under realistic earthquakes, filtered through your building's sway, from gentle to violent shaking.</p>
+        </div>
+        <div>
+          <h3>Strap what matters first</h3>
+          <p>You get the chance each item falls, whether it lands on someone or blocks the door, and an order to anchor things in.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="band">
+      <h2>The same bookcase, two homes</h2>
+      <p>A 1.9 m bookcase 30 cm deep, against a wall. Shaking strong enough to give it an even chance of toppling:</p>
+      <div class="facts">
+        <div class="fact"><span class="fact-value" id="fact-ground">…</span><p>at the ground, in a house</p></div>
+        <div class="fact"><span class="fact-value" id="fact-high">…</span><p>at the ground, if you live on the 8th floor of a 10-storey block, because the building sways and adds its own motion</p></div>
+      </div>
+    </section>
