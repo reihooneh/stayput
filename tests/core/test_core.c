@@ -245,7 +245,28 @@ static void test_bad_arguments(void) {
   CHECK(sp_room(&bad[3], &a, 1, g, 1, 1, 0, &f) < 0, "a bad item in a room");
 }
 
+/* Random items, including nonsense ones, through random shaking: nothing may crash, read out of
+ * bounds or produce a tilt beyond lying flat. Runs under the sanitizers. */
+static void test_random(void) {
+  sp_rng r;
+  sp_seed(&r, 99, 99);
+  static float g[SP_STEPS], tr[2 * SP_STEPS];
+  int bad_ok = 1, bounded = 1;
+  for (int round = 0; round < 400; round++) {
+    sp_item it = {sp_uniform(&r) * 2.2 - 0.1, sp_uniform(&r) * 3.4 - 0.2, sp_uniform(&r), sp_uniform(&r) * 1.7, (int)(sp_next(&r) % 3)};
+    for (int i = 0; i < SP_STEPS; i++) g[i] = (float)(sp_normal(&r) * (sp_uniform(&r) < 0.01 ? 50 : 1));
+    int n = 0;
+    const sp_result res = sp_run(&it, g, sp_uniform(&r) * 3, tr, (int)(sp_next(&r) % 5), &n);
+    if (sp_check_item(&it) != 0) bad_ok &= res.outcome == SP_STILL && n == 0;
+    for (int i = 0; i < n; i++) bounded &= fabs(tr[2 * i]) <= 1.5708 + 1e-6 && isfinite(tr[2 * i + 1]);
+    bounded &= res.peak >= 0 && res.peak <= 1 && isfinite(res.slide);
+  }
+  CHECK(bad_ok, "invalid random items are refused without running");
+  CHECK(bounded, "random runs stay finite, and a tilt never goes past lying flat");
+}
+
 int main(void) {
+  test_random();
   test_maths();
   test_motion();
   test_rocking();
