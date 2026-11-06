@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'wasm-unsafe-eval'; worker-src 'self'; style-src 'self'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; base-uri 'none'; form-action 'none'">
+  <meta name="referrer" content="no-referrer">
+  <title>Stayput: which furniture falls in an earthquake</title>
+  <meta name="description" content="Stayput simulates thousands of earthquakes on the floor you live on to find which furniture in a room will topple, where it lands, and what to anchor first.">
+  <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+  <link rel="preload" href="assets/fonts/fraunces.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="assets/css/site.css">
+  <script type="module" src="assets/js/home.js"></script>
+</head>
+<body class="page-index">
+  <a class="skip" href="#main">Skip to the content</a>
+  <header class="top">
+    <div class="top-inner">
+      <a class="mark" href="index.html" aria-label="Stayput home">
+        <svg class="mark-icon" viewBox="0 0 32 32" aria-hidden="true"><rect x="9" y="6" width="10" height="22" rx="1"/><path d="M19 9h6v4"/><path d="M3 29h26"/></svg>
+        <span>Stayput</span>
+      </a>
+      <nav class="nav" aria-label="Pages">
+        <a href="index.html" aria-current="page">Home</a>
+        <a href="room.html">Check a room</a>
+        <a href="shaking.html">Why things fall</a>
+        <a href="method.html">How it works</a>
+      </nav>
+    </div>
+  </header>
+  <main id="main">
+    <section class="hero">
+      <div class="hero-text">
+        <h1>Which of your furniture falls in an earthquake?</h1>
+        <p class="lede">In strong shaking, tall furniture topples onto beds, desks and doorways. Stayput simulates hundreds of earthquakes on the floor you live on, works out what falls, where it lands, and which straps to put up first.</p>
+        <div class="actions">
+          <a class="button primary" href="room.html">Check your room</a>
+          <a class="button" href="shaking.html">Why things fall</a>
+        </div>
+      </div>
+      <div class="shake-box">
+        <div id="hero-view" class="view" aria-describedby="home-status"></div>
+        <div id="seismo" class="seismo-box"></div>
+        <div class="shake-controls">
+          <fieldset class="fieldset">
+            <legend>Shaking strength (Mercalli intensity)</legend>
+            <div class="shake-row">
+              <div class="segmented" id="intensity"></div>
+              <button class="button primary" id="shake" type="button" disabled>Shake the room</button>
+            </div>
+          </fieldset>
+          <p class="status" id="home-status" role="status">Loading the simulation…</p>
+          <ul class="outcomes" id="outcomes" aria-label="What each item did"></ul>
+          <button class="button quiet" id="another" type="button" disabled>Try another earthquake</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="band">
+      <h2>How it works</h2>
+      <div class="steps">
+        <div>
+          <h3>Draw your room</h3>
+          <p>Place your bookcases, wardrobes and shelves, the bed or desk, and the door. Say which floor you live on and what the ground is like.</p>
+        </div>
+        <div>
+          <h3>Shake it hundreds of times</h3>
+          <p>Each piece of furniture rocks on its edges under realistic earthquakes, filtered through your building's sway, from gentle to violent shaking.</p>
+        </div>
+        <div>
+          <h3>Strap what matters first</h3>
+          <p>You get the chance each item falls, whether it lands on someone or blocks the door, and an order to anchor things in.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="band">
+      <h2>The same bookcase, two homes</h2>
+      <p>A 1.9 m bookcase 30 cm deep, against a wall. Shaking strong enough to give it an even chance of toppling:</p>
+      <div class="facts">
+        <div class="fact"><span class="fact-value" id="fact-ground">…</span><p>at the ground, in a house</p></div>
+        <div class="fact"><span class="fact-value" id="fact-high">…</span><p>at the ground, if you live on the 8th floor of a 10-storey block, because the building sways and adds its own motion</p></div>
+      </div>
+    </section>
+  </main>
+  <footer class="foot">
+    <div class="foot-inner">
+      <p>Stayput is open source (MIT). It runs entirely in your browser: no sign-in, no tracking, and room files you load never leave your device. It is a planning aid, not an engineering assessment.</p>
+      <p><a href="https://github.com/reihooneh/stayput">Source code and tests on GitHub</a></p>
+    </div>
+  </footer>
+</body>
+</html>

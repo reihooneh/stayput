@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'wasm-unsafe-eval'; worker-src 'self'; style-src 'self'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; base-uri 'none'; form-action 'none'">
+  <meta name="referrer" content="no-referrer">
+  <title>How it works: Stayput</title>
+  <meta name="description" content="The physics and statistics behind Stayput: synthetic earthquakes, a yielding building, Housner rocking, Monte Carlo fragility curves, and how the plan is ranked.">
+  <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+  <link rel="preload" href="assets/fonts/fraunces.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="assets/css/site.css">
+  <script type="module" src="assets/js/method.js"></script>
+</head>
+<body class="page-method">
+  <a class="skip" href="#main">Skip to the content</a>
+  <header class="top">
+    <div class="top-inner">
+      <a class="mark" href="index.html" aria-label="Stayput home">
+        <svg class="mark-icon" viewBox="0 0 32 32" aria-hidden="true"><rect x="9" y="6" width="10" height="22" rx="1"/><path d="M19 9h6v4"/><path d="M3 29h26"/></svg>
+        <span>Stayput</span>
+      </a>
+      <nav class="nav" aria-label="Pages">
+        <a href="index.html">Home</a>
+        <a href="room.html">Check a room</a>
+        <a href="shaking.html">Why things fall</a>
+        <a href="method.html" aria-current="page">How it works</a>
+      </nav>
+    </div>
+  </header>
+  <main id="main">
+    <article class="prose">
+      <h1>How it works</h1>
+      <p class="lede">Stayput follows the shaking from the ground, up through your building, to the floor under each piece of furniture, then asks what that furniture does, hundreds of times over.</p>
+
+      <h2>Earthquakes made to order</h2>
+      <p>Real earthquake records are few and each is one roll of the dice, so Stayput makes its own. White noise is passed through the Kanai–Tajimi filter, which gives it the frequencies your ground amplifies (rock, firm soil or soft soil), then through a Clough–Penzien filter that removes slow drift and a 20 Hz low-pass that removes the high frequencies real records lose. A build-up, strong phase and decay shape it into 15 seconds of shaking in two horizontal directions. Each record is scaled to an exact peak ground acceleration.</p>
+
+      <h2>Your building sways</h2>
+      <p>Upper floors do not move like the ground. Stayput models the building's first mode: an oscillator with a period of 0.1 s per storey and 5% damping, whose structure yields at 0.35 g, as real buildings do in strong shaking. Floor <i>k</i> of an <i>N</i>-storey building moves with the ground plus its share of the sway:</p>
+      <p class="equation">a<sub>floor</sub>(t) = a<sub>ground</sub>(t) + Γ φ ü(t),&ensp; φ = k / N,&ensp; Γ = 3N / (2N + 1)</p>
+
+      <h2>Furniture rocks on its edges</h2>
+      <p>A free-standing bookcase is a rigid block. In 1963 George Housner wrote down how one rocks: it pivots on its front or back bottom edge, and each time it lands back on its base it loses a fixed share of its spin.</p>
+      <figure class="diagram">
+        <svg viewBox="0 0 560 300" role="img" aria-label="A block tilted forwards on its front bottom edge">
+          <line class="d-floor" x1="40" y1="260" x2="520" y2="260"/>
+          <g transform="rotate(12 330 260)">
+            <rect class="d-box" x="250" y="40" width="80" height="220"/>
+            <line class="d-dash" x1="290" y1="150" x2="290" y2="258"/>
+            <line class="d-dash" x1="290" y1="258" x2="330" y2="258"/>
+          </g>
+          <line class="d-line" x1="330" y1="260" x2="313.8" y2="144.1"/>
+          <circle class="d-dot" cx="313.8" cy="144.1" r="5"/>
+          <circle class="d-dot" cx="330" cy="260" r="5"/>
+          <text x="346" y="200">R</text>
+          <text x="282" y="210">h</text>
+          <text x="296" y="290">b</text>
+          <text x="346" y="290">pivot edge</text>
+          <text x="400" y="70">tips forwards</text>
+          <path class="d-arrow" d="M410 90 q 40 30 34 86"/>
+        </svg>
+        <figcaption class="small">The block tilts on its front bottom edge. <i>b</i> is half its depth, <i>h</i> the height of its centre of mass (the dot), <i>R</i> the distance from the edge to it, and its slenderness angle α satisfies tan α = <i>b</i> / <i>h</i>.</figcaption>
+      </figure>
+      <p class="equation">θ̈ = −p² [ sin(α sgn θ − θ) + (a<sub>floor</sub> / g) cos(α sgn θ − θ) ],&ensp; p² = m g R / I<sub>edge</sub></p>
+      <p>It starts rocking only when the floor's acceleration passes <i>g</i> tan α, and it topples when its tilt passes α. At each landing its spin is multiplied by 1 − 2 (m R² / I) sin² α. A wall behind stops it falling backwards. If its feet grip the floor less than tan α, it slides instead, by Coulomb friction, and never rocks. Stayput integrates all this with fourth-order Runge–Kutta at 800 steps a second.</p>
+
+      <h2>From hundreds of earthquakes to one curve</h2>
+      <p>For every item, Stayput runs 24 earthquakes at each of 16 strengths, from 0.05 g to 1.2 g, through your building to your floor, along the item's own direction. The share that topple it at each strength is fitted with a lognormal fragility curve by maximum likelihood: the curve every earthquake engineer uses for "the chance of damage at this shaking".</p>
+
+      <h2>Where it lands, and what to do first</h2>
+      <p>A toppled item lies in a strip as long as it is tall, in front of it (or behind, if no wall stops it). Where that strip covers a bed, a cot, a desk, a sofa or a doorway, Stayput counts a hit. Items are ranked by expected harm: the chance it lands on someone, times the hours a day someone is there, times the energy it falls with (its mass, gravity and the height of its centre of mass). A child's cot counts double. Items that block the door come next, then everything else by its chance of falling.</p>
+
+      <h2>Checked against theory</h2>
+      <p>The core is C, compiled to WebAssembly for this page and natively for the tests, which run under AddressSanitizer and UndefinedBehaviorSanitizer:</p>
+      <div class="table-wrap">
+        <table class="checks">
+          <thead><tr><th scope="col">Check</th><th scope="col">Result</th></tr></thead>
+          <tbody>
+            <tr><td>Below g tan α a block stays put; just above, it rocks</td><td>Exact</td></tr>
+            <tr><td>Restitution and rocking frequency equal Housner's for a uniform box</td><td>Within 10⁻⁹</td></tr>
+            <tr><td>Sliding distance under a 2 s push, against working it out by hand</td><td>Within 2%</td></tr>
+            <tr><td>Top-floor motion at resonance, against the oscillator's theory</td><td>Within 6%</td></tr>
+            <tr><td>The fit recovers a known curve (median 0.42 g, spread 0.35)</td><td>Within 1%</td></tr>
+            <tr><td>Bigger blocks of the same shape are harder to topple</td><td>Every size</td></tr>
+            <tr><td>Its own sine, exp, log and normal distribution, against the C library</td><td>Within 10⁻¹²</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h3>Live: Housner's size effect, run in your browser now</h3>
+      <p>Four boxes with the same proportions as a bookcase (30 cm deep for every 1.9 m of height), on the ground floor:</p>
+      <div class="table-wrap">
+        <table id="size-check">
+          <thead><tr><th scope="col">Height</th><th scope="col">Even chance of toppling at</th></tr></thead>
+          <tbody><tr><td>Running…</td><td></td></tr></tbody>
+        </table>
+      </div>
+      <p class="status" id="size-verdict" role="status"></p>
+
+      <h2>What it leaves out</h2>
+      <p>Stayput is a planning aid, not an engineering assessment. It treats furniture as a rigid block rocking along its depth only. It does not model contents falling out, drawers sliding open, legs, castors, or items hitting each other. Its earthquakes are synthetic, its building is a single yielding oscillator, and it treats separate items as independent. It assumes an anchor, screwed into a stud or solid wall, holds. Use the results to decide what to strap first, not to decide something is safe.</p>
+
+      <h2>Privacy and security</h2>
+      <p>Everything runs in your browser. There is no server, sign-in or tracking, and a room file you open never leaves your device. Files are checked strictly: size, every field's type and range, no unknown fields, and names limited to plain characters. The page builds no HTML from text, runs under a strict Content-Security-Policy, and loads nothing from other sites.</p>
+    </article>
+  </main>
+  <footer class="foot">
+    <div class="foot-inner">
+      <p>Stayput is open source (MIT). It runs entirely in your browser: no sign-in, no tracking, and room files you load never leave your device. It is a planning aid, not an engineering assessment.</p>
+      <p><a href="https://github.com/reihooneh/stayput">Source code and tests on GitHub</a></p>
+    </div>
+  </footer>
+</body>
+</html>

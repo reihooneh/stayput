@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'wasm-unsafe-eval'; worker-src 'self'; style-src 'self'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; base-uri 'none'; form-action 'none'">
+  <meta name="referrer" content="no-referrer">
+  <title>Why things fall: Stayput</title>
+  <meta name="description" content="Change a piece of furniture's shape, size, load and floor, and see live how likely it is to topple in an earthquake, and why.">
+  <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+  <link rel="preload" href="assets/fonts/fraunces.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="assets/css/site.css">
+  <script type="module" src="assets/js/shaking.js"></script>
+</head>
+<body class="page-shaking">
+  <a class="skip" href="#main">Skip to the content</a>
+  <header class="top">
+    <div class="top-inner">
+      <a class="mark" href="index.html" aria-label="Stayput home">
+        <svg class="mark-icon" viewBox="0 0 32 32" aria-hidden="true"><rect x="9" y="6" width="10" height="22" rx="1"/><path d="M19 9h6v4"/><path d="M3 29h26"/></svg>
+        <span>Stayput</span>
+      </a>
+      <nav class="nav" aria-label="Pages">
+        <a href="index.html">Home</a>
+        <a href="room.html">Check a room</a>
+        <a href="shaking.html" aria-current="page">Why things fall</a>
+        <a href="method.html">How it works</a>
+      </nav>
+    </div>
+  </header>
+  <main id="main">
+    <section class="tool">
+      <h1>Why things fall</h1>
+      <p class="lede">Whether furniture topples comes down to a few things you can change: how slender it is, how big, where its weight sits, what it stands on, and how high up you live. Change them here and watch the curves move.</p>
+      <div class="explore-grid">
+        <aside class="panel" aria-label="The piece of furniture">
+          <h2>The piece of furniture</h2>
+          <div class="field">
+            <label for="depth">Depth, front to back</label>
+            <div class="range-row"><input id="depth" type="range" min="0.15" max="1" step="0.01" value="0.3"><output id="depth-out" for="depth">0.30 m</output></div>
+          </div>
+          <div class="field">
+            <label for="height">Height</label>
+            <div class="range-row"><input id="height" type="range" min="0.4" max="2.6" step="0.05" value="1.9"><output id="height-out" for="height">1.90 m</output></div>
+          </div>
+          <div class="field">
+            <label for="load">Weight inside</label>
+            <select id="load">
+              <option value="low">Heavy things at the bottom</option>
+              <option value="even" selected>Spread evenly</option>
+              <option value="high">Heavy things at the top</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="feet">Stands on</label>
+            <select id="feet">
+              <option value="felt">Felt pads (slides easily)</option>
+              <option value="wood" selected>Wood on a hard floor</option>
+              <option value="carpet">Carpet</option>
+              <option value="rubber">Rubber feet (grips)</option>
+            </select>
+          </div>
+          <label class="check"><input id="backed" type="checkbox" checked> Flat against a wall behind it</label>
+          <h2>Where it is</h2>
+          <div class="two">
+            <div class="field"><label for="storeys">Storeys</label><input id="storeys" type="number" min="1" max="60" step="1" value="8"></div>
+            <div class="field"><label for="floor">Floor</label><input id="floor" type="number" min="0" max="59" step="1" value="5"></div>
+          </div>
+          <div class="field">
+            <label for="soil">Ground</label>
+            <select id="soil">
+              <option value="rock">Rock or very firm ground</option>
+              <option value="firm" selected>Firm soil</option>
+              <option value="soft">Soft soil or fill</option>
+            </select>
+          </div>
+          <p class="error" id="form-error" role="alert" hidden></p>
+        </aside>
+        <div>
+          <div class="readouts">
+            <div class="readout"><strong id="r-tip">…</strong><span>floor acceleration that starts it rocking</span></div>
+            <div class="readout"><strong id="r-median">…</strong><span>ground shaking with an even chance it topples</span></div>
+            <div class="readout"><strong id="r-floor">…</strong><span>the same on the ground floor</span></div>
+          </div>
+          <h2>Chance of toppling as the shaking grows</h2>
+          <div class="figure">
+            <div id="curve" class="chart-box"></div>
+            <div class="key" aria-hidden="true">
+              <span><i class="yours"></i>Yours, on your floor</span>
+              <span><i class="ground"></i>Yours, on the ground floor</span>
+              <span><i class="bigger"></i>Same shape, bigger (up to twice)</span>
+              <span><i class="smaller"></i>Same shape, half the size</span>
+            </div>
+          </div>
+          <p class="status" id="status" role="status">Loading the simulation…</p>
+          <p>Taller and slimmer means it starts rocking sooner: it begins to tip when the floor's acceleration passes g times its depth over the height of its centre of mass. But bigger things of the same shape are harder to topple, because a big box rocks slowly and the shaking reverses before it gets past its tipping point. That is Housner's size effect, and it is why a tiny ornament falls before a wardrobe of the same proportions.</p>
+
+          <h2>One earthquake, close up</h2>
+          <fieldset class="fieldset">
+            <legend>Strength (Mercalli intensity)</legend>
+            <div class="segmented" id="intensity"></div>
+          </fieldset>
+          <div class="actions">
+            <button class="button primary" id="shake" type="button" disabled>Shake it</button>
+            <button class="button" id="another" type="button" disabled>Another earthquake</button>
+          </div>
+          <div class="figure shake-figure">
+            <div id="view" class="view small"></div>
+          </div>
+          <p class="status" id="shake-status"></p>
+          <div class="figure">
+            <div id="motion" class="chart-box"></div>
+            <div class="key" aria-hidden="true"><span><i class="accel"></i>Floor acceleration along its depth (g)</span><span><i class="yours"></i>Tilt as a share of the tipping angle</span><span><i class="mark"></i>Tipping point</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+  <footer class="foot">
+    <div class="foot-inner">
+      <p>Stayput is open source (MIT). It runs entirely in your browser: no sign-in, no tracking, and room files you load never leave your device. It is a planning aid, not an engineering assessment.</p>
+      <p><a href="https://github.com/reihooneh/stayput">Source code and tests on GitHub</a></p>
+    </div>
+  </footer>
+</body>
+</html>

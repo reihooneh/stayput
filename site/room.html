@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'wasm-unsafe-eval'; worker-src 'self'; style-src 'self'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; base-uri 'none'; form-action 'none'">
+  <meta name="referrer" content="no-referrer">
+  <title>Check a room: Stayput</title>
+  <meta name="description" content="Draw a room, place its furniture, the bed and the door, and find what falls in an earthquake, where it lands, and what to anchor first.">
+  <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+  <link rel="preload" href="assets/fonts/fraunces.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="assets/css/site.css">
+  <script type="module" src="assets/js/room.js"></script>
+</head>
+<body class="page-room">
+  <a class="skip" href="#main">Skip to the content</a>
+  <header class="top">
+    <div class="top-inner">
+      <a class="mark" href="index.html" aria-label="Stayput home">
+        <svg class="mark-icon" viewBox="0 0 32 32" aria-hidden="true"><rect x="9" y="6" width="10" height="22" rx="1"/><path d="M19 9h6v4"/><path d="M3 29h26"/></svg>
+        <span>Stayput</span>
+      </a>
+      <nav class="nav" aria-label="Pages">
+        <a href="index.html">Home</a>
+        <a href="room.html" aria-current="page">Check a room</a>
+        <a href="shaking.html">Why things fall</a>
+        <a href="method.html">How it works</a>
+      </nav>
+    </div>
+  </header>
+  <main id="main">
+    <section class="tool">
+      <h1>Check a room</h1>
+      <p class="lede">Start from a room like yours, drag the furniture where it really stands, and say which floor you live on. Every change reruns the simulation: 24 earthquakes at 16 strengths for each item.</p>
+      <div class="tool-grid">
+        <aside aria-label="Room settings" class="settings">
+          <div class="panel">
+            <h2>Room</h2>
+            <div class="field">
+              <label for="preset">Start from</label>
+              <select id="preset">
+                <option value="bedroom">Bedroom</option>
+                <option value="kids-room">Kids' room (5th floor)</option>
+                <option value="living-room">Living room</option>
+                <option value="home-office">Home office (11th floor)</option>
+              </select>
+            </div>
+            <div class="two">
+              <div class="field"><label for="room-width">Width (m)</label><input id="room-width" type="number" min="1.5" max="15" step="0.1"></div>
+              <div class="field"><label for="room-depth">Depth (m)</label><input id="room-depth" type="number" min="1.5" max="15" step="0.1"></div>
+            </div>
+            <div class="field">
+              <label for="file">Open a room file (.json)</label>
+              <input id="file" type="file" accept=".json,application/json">
+            </div>
+            <div class="row-actions">
+              <button class="button quiet" id="export" type="button">Save room file</button>
+            </div>
+            <p class="error" id="form-error" role="alert" hidden></p>
+          </div>
+          <div class="panel">
+            <h2>Building</h2>
+            <div class="two">
+              <div class="field"><label for="storeys">Storeys</label><input id="storeys" type="number" min="1" max="60" step="1"></div>
+              <div class="field"><label for="floor">Your floor</label><input id="floor" type="number" min="0" max="59" step="1"></div>
+            </div>
+            <p class="small">Floor 0 is the ground floor.</p>
+            <div class="field">
+              <label for="soil">Ground under the building</label>
+              <select id="soil">
+                <option value="rock">Rock or very firm ground</option>
+                <option value="firm">Firm soil</option>
+                <option value="soft">Soft soil or fill</option>
+              </select>
+            </div>
+          </div>
+          <div class="panel">
+            <h2>Furniture</h2>
+            <ul class="item-list" id="items"></ul>
+            <label for="add-kind">Add furniture</label>
+            <div class="add-row">
+              <select id="add-kind"></select>
+              <button class="button" id="add" type="button">Add</button>
+            </div>
+          </div>
+          <div class="panel" id="editor">
+            <h2 id="editor-title">Selected item</h2>
+            <div class="field"><label for="it-name">Name</label><input id="it-name" type="text" maxlength="40"></div>
+            <div class="two">
+              <div class="field"><label for="it-width">Width (m)</label><input id="it-width" type="number" min="0.1" max="3" step="0.05"></div>
+              <div class="field"><label for="it-depth">Depth (m)</label><input id="it-depth" type="number" min="0.05" max="2" step="0.01"></div>
+              <div class="field"><label for="it-height">Height (m)</label><input id="it-height" type="number" min="0.1" max="3" step="0.05"></div>
+              <div class="field"><label for="it-mass">Mass (kg)</label><input id="it-mass" type="number" min="1" max="500" step="1"></div>
+            </div>
+            <div class="field">
+              <label for="it-load">Weight inside</label>
+              <select id="it-load">
+                <option value="low">Heavy things at the bottom</option>
+                <option value="even">Spread evenly</option>
+                <option value="high">Heavy things at the top</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="it-feet">Stands on</label>
+              <select id="it-feet">
+                <option value="felt">Felt pads (slides easily)</option>
+                <option value="wood">Wood on a hard floor</option>
+                <option value="carpet">Carpet</option>
+                <option value="rubber">Rubber feet (grips)</option>
+              </select>
+            </div>
+            <label class="check"><input id="it-backed" type="checkbox"> Flat against a wall behind it</label>
+            <label class="check"><input id="it-anchored" type="checkbox"> Anchored to the wall</label>
+            <div class="row-actions">
+              <button class="button quiet" id="turn" type="button">Turn a quarter</button>
+              <button class="button quiet" id="remove" type="button">Remove</button>
+            </div>
+          </div>
+        </aside>
+        <div class="results-col">
+          <fieldset class="fieldset">
+            <legend>Plan for this strength of shaking (Mercalli intensity)</legend>
+            <div class="segmented" id="intensity"></div>
+          </fieldset>
+          <p class="small" id="intensity-note"></p>
+          <div class="figure">
+            <div id="plan" class="plan-box"></div>
+            <div class="legend" aria-hidden="true">
+              <span><i class="swatch front"></i>Front edge</span>
+              <span><i class="swatch zone"></i>Where people are</span>
+              <span><i class="swatch exit"></i>Doorway</span>
+              <span><i class="swatch fall"></i>Where it lands if it falls</span>
+            </div>
+          </div>
+          <p class="small">Room, building and furniture settings are <a class="phone-only" href="#editor">below the results</a><span class="wide-only">on the left</span>. Drag furniture to move it, or select it and use the arrow keys (Shift for bigger steps) and R to turn it. The top and left edges are walls.</p>
+          <p class="status" id="status" role="status">Loading…</p>
+          <p class="verdict" id="verdict"></p>
+          <div class="table-wrap">
+            <table id="results">
+              <caption class="visually-hidden">Each item: chance it falls in this shaking, where it lands, and what to do</caption>
+              <thead><tr><th scope="col">Item</th><th scope="col">Falls</th><th scope="col">Lands on</th><th scope="col">What to do</th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+          <h2 class="band-h">What to anchor first</h2>
+          <ol class="anchors" id="anchors"></ol>
+          <div class="actions">
+            <button class="button" id="checklist" type="button">Download the checklist</button>
+            <button class="button" id="shake" type="button">Shake this room in 3D</button>
+          </div>
+          <div class="figure shake-figure">
+            <div id="view" class="view small"></div>
+          </div>
+          <p class="status" id="shake-status"></p>
+        </div>
+      </div>
+    </section>
+  </main>
+  <footer class="foot">
+    <div class="foot-inner">
+      <p>Stayput is open source (MIT). It runs entirely in your browser: no sign-in, no tracking, and room files you load never leave your device. It is a planning aid, not an engineering assessment.</p>
+      <p><a href="https://github.com/reihooneh/stayput">Source code and tests on GitHub</a></p>
+    </div>
+  </footer>
+</body>
+</html>
