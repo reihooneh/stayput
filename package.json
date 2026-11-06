@@ -6,7 +6,8 @@
   "type": "module",
   "license": "MIT",
   "scripts": {
-    "build": "make wasm && node scripts/build.mjs",
+    "build": "make -B wasm && node scripts/build.mjs",
+    "test:core": "make test-core",
     "test": "node --test --test-concurrency=1 tests/engine/*.test.mjs",
     "test:web": "node --test --test-concurrency=1 tests/web/*.test.mjs",
     "serve": "node scripts/serve.mjs"
