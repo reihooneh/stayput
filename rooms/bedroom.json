@@ -1,0 +1,15 @@
+{
+  "name": "Bedroom",
+  "width": 3.8, "depth": 3.4, "storeys": 1, "floor": 0, "soil": "firm",
+  "items": [
+    { "id": "bookcase", "kind": "bookcase", "name": "Tall bookcase", "x": 0.55, "y": 1.7, "rotation": 90, "width": 0.8, "depth": 0.3, "height": 1.9, "mass": 60, "load": "even", "feet": "wood", "backed": true },
+    { "id": "wardrobe", "kind": "wardrobe", "name": "Wardrobe", "x": 3.0, "y": 0.3, "rotation": 0, "width": 1.2, "depth": 0.58, "height": 2.0, "mass": 95, "load": "even", "feet": "wood", "backed": true },
+    { "id": "dresser", "kind": "dresser", "name": "Chest of drawers", "x": 3.5, "y": 2.6, "rotation": 270, "width": 0.9, "depth": 0.48, "height": 1.1, "mass": 55, "load": "even", "feet": "wood", "backed": true },
+    { "id": "lamp", "kind": "lamp", "name": "Floor lamp", "x": 0.25, "y": 3.1, "rotation": 0, "width": 0.35, "depth": 0.35, "height": 1.6, "mass": 6, "load": "low", "feet": "felt", "backed": false },
+    { "id": "shelf", "kind": "shelf", "name": "Narrow shelf", "x": 1.5, "y": 0.16, "rotation": 0, "width": 0.6, "depth": 0.25, "height": 1.6, "mass": 30, "load": "high", "feet": "wood", "backed": true }
+  ],
+  "zones": [
+    { "kind": "bed", "name": "Bed", "x": 0.9, "y": 1.0, "width": 1.5, "depth": 2.0 },
+    { "kind": "exit", "name": "Door", "x": 1.4, "y": 3.0, "width": 0.9, "depth": 0.4 }
+  ]
+}
